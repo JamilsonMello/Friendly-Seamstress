@@ -1,21 +1,14 @@
-import React, { useEffect, useCallback, useState, useMemo } from 'react';
-import {
-  FlatList,
-  useWindowDimensions,
-  Modal,
-  TouchableOpacity,
-} from 'react-native';
-import { StackScreenProps } from '@react-navigation/stack';
+import React, {useEffect, useCallback, useState, useMemo} from 'react';
+import {FlatList, useWindowDimensions, TouchableOpacity} from 'react-native';
+import {StackScreenProps} from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Feather';
-import { firebase } from '@react-native-firebase/firestore';
-import { useNavigation } from '@react-navigation/native';
-import { CalendarList } from 'react-native-calendars';
-import { format } from 'date-fns';
-import { Picker } from '@react-native-community/picker';
+import {firebase} from '@react-native-firebase/firestore';
+import {useNavigation} from '@react-navigation/native';
+import {format} from 'date-fns';
 
-import Input from '../../components/Input';
-import { useCompany } from '../../hooks/context/CompaniesProvider';
-import { numberFormat } from '../../utils/format';
+import {useCompany} from '../../hooks/context/CompaniesProvider';
+import {numberFormat} from '../../utils/format';
+import ModalFilter from '../../components/ModalFilter';
 
 import {
   Container,
@@ -37,13 +30,6 @@ import {
   TitleProduction,
   DateProduction,
   BottomView,
-  FilterView,
-  ButtonFieldDate,
-  CloseButton,
-  ConfirmButton,
-  ConfirmButtonText,
-  Title,
-  ChoiceCompany,
   ArrowDownContainer,
   TotalText,
   TotalValue,
@@ -94,39 +80,31 @@ interface DateFormattedProps {
   finalDate: string;
 }
 
-interface SelectedProps {
-  first: boolean;
-}
-
 type RootStackParamList = {
   Profile: UserProps;
 };
 
 type Props = StackScreenProps<RootStackParamList, 'Profile'>;
 
-const Profile: React.FC<Props> = ({ route }) => {
+const Profile: React.FC<Props> = ({route}) => {
   const [history, setHistory] = useState<HistoryProps[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [date, setDate] = useState<DateProps>({} as DateProps);
-  const [showCalendar, setShowCalendar] = useState<boolean>(false);
-  const [selectedValue, setSelectedValue] = useState<React.ReactText>();
+  const [company, setCompany] = useState<string | undefined>('Todos');
   const [showTotal, setShowTotal] = useState<boolean>(false);
-  const [selected, setSelected] = useState<SelectedProps>({} as SelectedProps);
+  const [field, setField] = useState<number>();
   const [dateFormatted, setDateFormatted] = useState<DateFormattedProps>(
     {} as DateFormattedProps,
   );
-  const [selectedDate, setSelectDate] = useState<SelectedDateProps>(
-    {} as SelectedDateProps,
-  );
 
-  const { height, width } = useWindowDimensions();
-  const { user } = route.params;
+  const {width} = useWindowDimensions();
+  const {user} = route.params;
 
-  const { navigate } = useNavigation();
-  const { loadCompanies } = useCompany();
+  const {navigate} = useNavigation();
+  const {loadCompanies} = useCompany();
 
   const loadHistory = useCallback(async () => {
-    const { docs } = await firebase
+    const {docs} = await firebase
       .firestore()
       .collection('production')
       .where('provider_id', '==', `${user.provider_id}`)
@@ -150,13 +128,13 @@ const Profile: React.FC<Props> = ({ route }) => {
     setHistory(dataArray as HistoryProps[]);
   }, [user]);
 
-  const { total, value } = useMemo(() => {
+  const {total, value} = useMemo(() => {
     const totalValue = history?.reduce(
       (acc, data) => ({
         total: acc.total += data.quantity,
         value: acc.value += data.value * data.quantity,
       }),
-      { total: 0, value: 0 },
+      {total: 0, value: 0},
     );
 
     const totalSum = numberFormat(totalValue.value);
@@ -168,18 +146,25 @@ const Profile: React.FC<Props> = ({ route }) => {
   }, [history]);
 
   const handleFilterHistory = useCallback(async () => {
-    if (!date.finalDate || !date.initialDate) return;
+    if (!date.finalDate || !date.initialDate) {
+      return;
+    }
+
+    const companyFilter =
+      company === 'Todos'
+        ? loadCompanies().map((data) => data.name)
+        : [company];
 
     setModalVisible((state) => !state);
 
-    const { docs } = await firebase
+    const {docs} = await firebase
       .firestore()
       .collection('production')
       .where('provider_id', '==', `${user.provider_id}`)
       .where('user_id', '==', `${user.user_id}`)
       .where('received', '>=', date.initialDate.getTime())
       .where('received', '<=', date.finalDate.getTime())
-      .where('company', '==', selectedValue || loadCompanies()[0].name)
+      .where('company', 'in', companyFilter)
       .orderBy('received', 'desc')
       .get();
 
@@ -196,7 +181,7 @@ const Profile: React.FC<Props> = ({ route }) => {
     date.initialDate,
     user.provider_id,
     user.user_id,
-    selectedValue,
+    company,
     loadCompanies,
   ]);
 
@@ -205,34 +190,35 @@ const Profile: React.FC<Props> = ({ route }) => {
   }, [loadHistory]);
 
   const handleDateSubmit = useCallback(
-    (event: SelectedDateProps) => {
-      const { day, month, year, dateString } = event;
-
-      const formatted = format(
-        new Date(year, month - 1, day),
-        "dd'/'MM'/'yyyy",
-      );
+    (formattedDate: string, dateEvent: SelectedDateProps) => {
+      const {day, month, year} = dateEvent;
 
       setDateFormatted({
-        initialDate: selected.first ? formatted : dateFormatted.initialDate,
-        finalDate: !selected.first ? formatted : dateFormatted.finalDate,
+        initialDate: field === 0 ? formattedDate : dateFormatted.initialDate,
+        finalDate: field === 1 ? formattedDate : dateFormatted.finalDate,
       });
-      setSelectDate({ day, month, year, dateString });
 
       setDate({
-        initialDate: selected.first
-          ? new Date(year, month - 1, day)
-          : date.initialDate,
-        finalDate: !selected.first
-          ? new Date(year, month - 1, day)
-          : date.finalDate,
+        initialDate:
+          field === 0 ? new Date(year, month - 1, day) : date.initialDate,
+        finalDate:
+          field === 1 ? new Date(year, month - 1, day) : date.finalDate,
       });
-
-      setShowCalendar((state) => !state);
-      setSelected({ first: false });
     },
-    [dateFormatted, selected, date],
+    [dateFormatted, field, date],
   );
+
+  const handleFieldSelected = useCallback((fieldValue: number): void => {
+    setField(fieldValue);
+  }, []);
+
+  const handleCompany = useCallback(
+    (companySelected: string | undefined): void => {
+      setCompany(companySelected);
+    },
+    [],
+  );
+  console.log(company);
 
   const handleUpdateStatus = useCallback(
     async (id, status): Promise<void> => {
@@ -255,99 +241,24 @@ const Profile: React.FC<Props> = ({ route }) => {
     [history],
   );
 
+  const handleModalVisible = useCallback(() => {
+    setModalVisible(!modalVisible);
+    setDateFormatted({} as DateFormattedProps);
+  }, [modalVisible]);
+
   return (
     <Container>
-      <Modal visible={modalVisible} animationType="slide" transparent>
-        <FilterView>
-          <CloseButton
-            hitSlop={{
-              bottom: 10,
-              top: 10,
-              right: 10,
-              left: 10,
-            }}
-            onPress={() => {
-              setModalVisible(!modalVisible);
-              setDateFormatted({} as DateFormattedProps);
-            }}>
-            <Icon color="#999" size={30} name="x" />
-          </CloseButton>
-          <Title>De</Title>
-          <ButtonFieldDate
-            onPress={() => {
-              setShowCalendar((state) => !state);
-              setSelected({ first: true });
-            }}>
-            <Input
-              icon="calendar"
-              editable={false}
-              value={dateFormatted.initialDate}
-              placeholder="Escolha a data inicial"
-            />
-          </ButtonFieldDate>
-          <Title>Ate</Title>
-          <ButtonFieldDate onPress={() => setShowCalendar((state) => !state)}>
-            <Input
-              icon="calendar"
-              editable={false}
-              value={dateFormatted.finalDate}
-              placeholder="Escolha a data final"
-            />
-          </ButtonFieldDate>
+      <ModalFilter
+        handleFilterHistory={handleFilterHistory}
+        visible={modalVisible}
+        fieldSelected={handleFieldSelected}
+        handleVisible={handleModalVisible}
+        handleDateSubmit={handleDateSubmit}
+        finalDate={dateFormatted.finalDate}
+        initialDate={dateFormatted.initialDate}
+        companySelected={handleCompany}
+      />
 
-          <ChoiceCompany>
-            <Picker
-              selectedValue={selectedValue}
-              onValueChange={(itemValue) => setSelectedValue(itemValue)}
-              style={{
-                height: 50,
-                width: '100%',
-                color: '#ddd',
-              }}>
-              {loadCompanies().map((data) => (
-                <Picker.Item
-                  key={data.id}
-                  color="#000"
-                  label={`${data.name}`}
-                  value={`${data.name}`}
-                />
-              ))}
-            </Picker>
-          </ChoiceCompany>
-
-          <ConfirmButton onPress={() => handleFilterHistory()}>
-            <ConfirmButtonText>Confirmar</ConfirmButtonText>
-          </ConfirmButton>
-        </FilterView>
-        {showCalendar && (
-          <CalendarList
-            horizontal
-            pagingEnabled
-            calendarWidth={width - 30}
-            theme={{
-              calendarBackground: '#444242',
-              monthTextColor: '#fff',
-              dayTextColor: '#fff',
-              todayTextColor: '#00FFee',
-              textSectionTitleColor: '#fff',
-            }}
-            markedDates={{
-              [selectedDate.dateString]: {
-                selected: true,
-                marked: true,
-                selectedColor: '#00FFFF',
-              },
-            }}
-            style={{
-              position: 'absolute',
-              bottom: height / 4,
-              alignSelf: 'center',
-              width: width - 30,
-            }}
-            onDayPress={handleDateSubmit}
-          />
-        )}
-      </Modal>
       <ProfileView>
         <ProfileImage
           source={{
@@ -415,7 +326,7 @@ const Profile: React.FC<Props> = ({ route }) => {
         </MainView> */}
 
         <RegisterProductionButton
-          onPress={() => navigate('RegisterProduction', { user })}>
+          onPress={() => navigate('RegisterProduction', {user})}>
           <RegisterProductionButtonText>Cadastrar</RegisterProductionButtonText>
         </RegisterProductionButton>
 
@@ -454,10 +365,10 @@ const Profile: React.FC<Props> = ({ route }) => {
         data={history}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item, index }) => (
+        renderItem={({item, index}) => (
           <ProductionHistory
             lastItem={history.length - 1 === index}
-            onPress={() => navigate('Details', { item })}>
+            onPress={() => navigate('Details', {item})}>
             <TitleProduction>
               {`${item.title.replace(
                 item.title.charAt(0),

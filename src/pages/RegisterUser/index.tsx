@@ -1,17 +1,17 @@
-import React, { useRef, useState, useCallback } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers';
-import { TextInput, ActivityIndicator, Keyboard } from 'react-native';
+import React, {useRef, useState, useCallback} from 'react';
+import {useForm, Controller} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers';
+import {TextInput, ActivityIndicator, Keyboard} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import * as yup from 'yup';
 import * as Animation from 'react-native-animatable';
-import { useNavigation } from '@react-navigation/native';
-import { firebase } from '@react-native-firebase/firestore';
+import {useNavigation} from '@react-navigation/native';
+import {firebase} from '@react-native-firebase/firestore';
 
 import Input from '../../components/Input';
-import { useAuth } from '../../hooks/context/AuthProvider';
+import {useAuth} from '../../hooks/context/AuthProvider';
 
-import { Container, RegisterButton, RegisterButtonText } from './styles';
+import {Container, RegisterButton, RegisterButtonText} from './styles';
 
 interface DataForm {
   name: string;
@@ -41,8 +41,8 @@ const RegisterUser: React.FC = () => {
   const phoneRef = useRef<TextInput>(null);
   const [loading, setLoading] = useState(false);
 
-  const { navigate } = useNavigation();
-  const { provider } = useAuth();
+  const {navigate} = useNavigation();
+  const {provider} = useAuth();
 
   const schema = yup.object().shape({
     name: yup.string().required('O nome é obrigatório'),
@@ -55,13 +55,13 @@ const RegisterUser: React.FC = () => {
       .typeError('Digite apenas números'),
   });
 
-  const { handleSubmit, errors, control, setValue } = useForm<DataForm>({
+  const {handleSubmit, errors, control, setValue} = useForm<DataForm>({
     resolver: yupResolver(schema),
     mode: 'onSubmit',
   });
 
   const handleSubmitButton = useCallback(
-    async ({ name, office, whatsapp }: DataForm): Promise<void> => {
+    async ({name, office, whatsapp}: DataForm): Promise<void> => {
       setValue('name', '');
       setValue('office', '');
       setValue('whatsapp', '');
@@ -90,7 +90,7 @@ const RegisterUser: React.FC = () => {
         name="user-plus"
         size={80}
         color="#1a1a1d"
-        style={{ marginBottom: 30, alignSelf: 'center' }}
+        style={{marginBottom: 30, alignSelf: 'center'}}
       />
 
       <Animation.View delay={300} useNativeDriver animation="bounceInLeft">
@@ -98,7 +98,7 @@ const RegisterUser: React.FC = () => {
           control={control}
           name="name"
           defaultValue=""
-          render={({ onChange, value }) => (
+          render={({onChange, value}) => (
             <Input
               erro={errors?.name}
               icon="user"
@@ -118,7 +118,7 @@ const RegisterUser: React.FC = () => {
           control={control}
           name="office"
           defaultValue=""
-          render={({ onChange, value }) => (
+          render={({onChange, value}) => (
             <Input
               ref={officeRef}
               erro={errors?.name}
@@ -138,7 +138,7 @@ const RegisterUser: React.FC = () => {
           control={control}
           name="whatsapp"
           defaultValue=""
-          render={({ onChange, value }) => (
+          render={({onChange, value}) => (
             <Input
               ref={phoneRef}
               erro={errors?.whatsapp}
