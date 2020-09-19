@@ -1,7 +1,7 @@
-import styled, { css } from 'styled-components/native';
-import { TouchableOpacityProperties } from 'react-native';
+import styled, {css} from 'styled-components/native';
+import {TouchableOpacityProps} from 'react-native';
 
-interface TouchableOpacityProps extends TouchableOpacityProperties {
+interface TouchableProps extends TouchableOpacityProps {
   selected: boolean;
 }
 
@@ -77,7 +77,7 @@ export const ProductDate = styled.Text`
 
 export const MonthsView = styled.View``;
 
-export const MonthButton = styled.TouchableOpacity<TouchableOpacityProps>`
+export const MonthButton = styled.TouchableOpacity<TouchableProps>`
   height: 46px;
   width: 58px;
   background: transparent;
@@ -86,7 +86,7 @@ export const MonthButton = styled.TouchableOpacity<TouchableOpacityProps>`
   border: 1px solid #eee;
   margin-right: 6px;
   border-radius: 10px;
-  ${({ selected }) =>
+  ${({selected}) =>
     selected &&
     css`
       border: 2px solid #00ffff;
