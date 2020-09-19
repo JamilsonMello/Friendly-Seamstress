@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useCallback,
-  useRef,
-  useEffect,
-  useMemo,
-} from 'react';
+import React, {useState, useCallback, useRef, useEffect, useMemo} from 'react';
 import {
   FlatList,
   SafeAreaView,
@@ -17,22 +11,23 @@ import {
   Vibration,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import { VictoryChart, VictoryBar, VictoryAxis } from 'victory-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { CalendarList } from 'react-native-calendars';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers';
+import {VictoryChart, VictoryBar, VictoryAxis} from 'victory-native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {CalendarList} from 'react-native-calendars';
+import {useForm, Controller} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers';
 import * as yup from 'yup';
-import { firebase } from '@react-native-firebase/firestore';
-import { format } from 'date-fns';
-import { Picker } from '@react-native-community/picker';
+import {firebase} from '@react-native-firebase/firestore';
+import {format} from 'date-fns';
+import {Picker} from '@react-native-community/picker';
 
 import months from '../../DATA/months';
-import { useTabShow } from '../../hooks/context/TabBarShowed';
-import { useAuth } from '../../hooks/context/AuthProvider';
+import {useTabShow} from '../../hooks/context/TabBarShowed';
+import {useAuth} from '../../hooks/context/AuthProvider';
 import Input from '../../components/Input';
-import { numberFormat } from '../../utils/format';
-import { useCompany } from '../../hooks/context/CompaniesProvider';
+import {numberFormat} from '../../utils/format';
+import {useCompany} from '../../hooks/context/CompaniesProvider';
+// import ModalFilter from '../../components/ModalFilter';
 
 import {
   Container,
@@ -158,20 +153,15 @@ const Deliveries: React.FC = () => {
   const valueRef = useRef<TextInput>(null);
   const companyRef = useRef<TextInput>(null);
 
-  const { height, width } = useWindowDimensions();
-  const { enableTabBar } = useTabShow();
-  const { provider } = useAuth();
-  const { navigate } = useNavigation();
-  const { loadCompanies } = useCompany();
+  const {height, width} = useWindowDimensions();
+  const {enableTabBar} = useTabShow();
+  const {provider} = useAuth();
+  const {navigate} = useNavigation();
+  const {loadCompanies} = useCompany();
 
-  const {
-    handleSubmit,
-    errors,
-    control,
-    reset,
-    setValue,
-    clearErrors,
-  } = useForm<DataForm>({
+  const {handleSubmit, errors, control, reset, setValue, clearErrors} = useForm<
+    DataForm
+  >({
     resolver: yupResolver(schema),
     mode: 'onSubmit',
   });
@@ -184,7 +174,7 @@ const Deliveries: React.FC = () => {
 
   const handleDateSubmit = useCallback(
     (event: SelectedDateProps): void => {
-      const { day, month, year, dateString } = event;
+      const {day, month, year, dateString} = event;
 
       const formatted = format(
         new Date(year, month - 1, day),
@@ -196,7 +186,7 @@ const Deliveries: React.FC = () => {
       const final =
         field === 1 ? new Date(year, month - 1, day) : compareDate.final;
 
-      setCompareDate({ initial, final });
+      setCompareDate({initial, final});
 
       if (filter) {
         setFilterDatesFormatted({
@@ -204,7 +194,7 @@ const Deliveries: React.FC = () => {
             field === 0 ? formatted : filterDatesFormatted.initialDate,
           finalDate: field === 1 ? formatted : filterDatesFormatted.finalDate,
         });
-        setSelectDate({ day, month, year, dateString });
+        setSelectDate({day, month, year, dateString});
         setShowCalendar(false);
 
         return;
@@ -223,7 +213,7 @@ const Deliveries: React.FC = () => {
 
       setDateFormatted(formatted);
 
-      setSelectDate({ day, month, year, dateString });
+      setSelectDate({day, month, year, dateString});
       setValue('date', new Date(dateString));
       clearErrors('date');
       setShowCalendar(false);
@@ -232,15 +222,9 @@ const Deliveries: React.FC = () => {
   );
 
   const handleSubmitButton = useCallback(
-    async ({
-      title,
-      quantity,
-      value,
-      description,
-    }: DataForm): Promise<void> => {
+    async ({title, quantity, value, description}: DataForm): Promise<void> => {
       setLoadingRequest(true);
-      const { day, month, year } = selectedDate;
-      console.log('pasou');
+      const {day, month, year} = selectedDate;
 
       setValue('title', '');
       setValue('quantity', '');
@@ -282,7 +266,6 @@ const Deliveries: React.FC = () => {
       selectedValue,
     ],
   );
-  console.log(loadCompanies()[0].name, selectedValue);
 
   const handleUpdateStatus = useCallback(
     async (id, status): Promise<void> => {
@@ -340,7 +323,7 @@ const Deliveries: React.FC = () => {
         total: acc.total += value.quantity,
         value: acc.value += value.value * value.quantity,
       }),
-      { total: 0, value: 0 },
+      {total: 0, value: 0},
     );
 
     const value = numberFormat(totalValue.value);
@@ -353,8 +336,6 @@ const Deliveries: React.FC = () => {
 
   const loadHistory = useCallback(
     async (month) => {
-      //   if (month && month === getMonthToSearch) return;
-
       setLoadingHistoryList(true);
       const year = new Date().getFullYear();
       const currentMonth = new Date().getMonth();
@@ -362,7 +343,7 @@ const Deliveries: React.FC = () => {
       const startDate = new Date(year, month - 1 || currentMonth, 1);
       const endDate = new Date(year, month || currentMonth + 1, 0);
 
-      const { docs } = await firebase
+      const {docs} = await firebase
         .firestore()
         .collection('orders')
         .where('provider_id', '==', `${provider.uid}`)
@@ -395,7 +376,7 @@ const Deliveries: React.FC = () => {
 
     setModalVisible(false);
 
-    const { docs } = await firebase
+    const {docs} = await firebase
       .firestore()
       .collection('orders')
       .where('provider_id', '==', `${provider.uid}`)
@@ -458,7 +439,7 @@ const Deliveries: React.FC = () => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{flex: 1}}>
       <Container>
         {history.length === 0 ? (
           <ViewNone>
@@ -467,7 +448,7 @@ const Deliveries: React.FC = () => {
         ) : (
           <VictoryChartContainer>
             <VictoryChart
-              minDomain={{ y: 0 }}
+              minDomain={{y: 0}}
               height={200}
               width={width - 30}
               padding={35}>
@@ -499,7 +480,7 @@ const Deliveries: React.FC = () => {
                 y="y"
                 animate={{
                   duration: 3000,
-                  onLoad: { duration: 3000 },
+                  onLoad: {duration: 3000},
                 }}
                 data={handleData}
               />
@@ -513,7 +494,7 @@ const Deliveries: React.FC = () => {
             showsHorizontalScrollIndicator={false}
             data={months}
             keyExtractor={(item) => String(item.id)}
-            renderItem={({ item, index }) => (
+            renderItem={({item, index}) => (
               <MonthButton
                 selected={getMonthToSearch === index + 1}
                 key={item.id}
@@ -556,7 +537,7 @@ const Deliveries: React.FC = () => {
 
         {loadingHistoryList ? (
           <ActivityIndicator
-            style={{ marginVertical: height / 4 }}
+            style={{marginVertical: height / 4}}
             color="#00ffff"
             size="small"
           />
@@ -566,13 +547,13 @@ const Deliveries: React.FC = () => {
             scrollEventThrottle={16}
             onRefresh={handleRefreshing}
             refreshing={refreshing}
-            contentContainerStyle={{ paddingBottom: 10 }}
+            contentContainerStyle={{paddingBottom: 10}}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item) => String(item.id)}
-            renderItem={({ item }) => (
+            renderItem={({item}) => (
               <ProductItem
                 key={item.id}
-                onPress={() => navigate('Details', { item })}>
+                onPress={() => navigate('Details', {item})}>
                 <ProductTopView>
                   <ProductTitle>{`${item.title}  |  ${item.company}`}</ProductTitle>
                   <ButtonIcon
@@ -600,6 +581,16 @@ const Deliveries: React.FC = () => {
 
         <Modal visible={modalVisible} animationType="slide" transparent>
           {filter ? (
+            // <ModalFilter
+            // handleFilterHistory={handleFilterHistory}
+            // visible={modalVisible}
+            // fieldSelected={handleFieldSelected}
+            // handleVisible={handleModalVisible}
+            // handleDateSubmit={handleDateSubmit}
+            // finalDate={dateFormatted.finalDate}
+            // initialDate={dateFormatted.initialDate}
+            // companySelected={handleCompany}
+            /// >
             <FilterView>
               <CloseButton
                 onPress={() => {
@@ -674,14 +665,14 @@ const Deliveries: React.FC = () => {
                   color="#999"
                   size={25}
                   name="x"
-                  style={{ position: 'relative' }}
+                  style={{position: 'relative'}}
                 />
               </CloseButton>
 
               <Controller
                 control={control}
                 name="title"
-                render={({ onChange, value }) => (
+                render={({onChange, value}) => (
                   <Input
                     erro={errors?.title}
                     icon="type"
@@ -699,7 +690,7 @@ const Deliveries: React.FC = () => {
               <Controller
                 control={control}
                 name="quantity"
-                render={({ onChange, value }) => (
+                render={({onChange, value}) => (
                   <Input
                     ref={quantityRef}
                     erro={errors?.quantity}
@@ -719,7 +710,7 @@ const Deliveries: React.FC = () => {
               <Controller
                 control={control}
                 name="value"
-                render={({ onChange, value }) => (
+                render={({onChange, value}) => (
                   <Input
                     ref={valueRef}
                     erro={errors?.value}
@@ -778,7 +769,7 @@ const Deliveries: React.FC = () => {
               <Controller
                 control={control}
                 name="description"
-                render={({ onChange, value }) => (
+                render={({onChange, value}) => (
                   <Input
                     // ref={descriptionRef}
                     erro={errors?.description}

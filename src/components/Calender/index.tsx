@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback} from 'react';
 import {useWindowDimensions} from 'react-native';
 import {format} from 'date-fns';
 import {CalendarList, CalendarListBaseProps} from 'react-native-calendars';

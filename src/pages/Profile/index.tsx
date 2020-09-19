@@ -16,10 +16,6 @@ import {
   ProfileImage,
   ProfileName,
   ProfileOffice,
-  // ViewProduction,
-  // ProductionText,
-  // DescriptionText,
-  // MainView,
   RegisterProductionButton,
   RegisterProductionButtonText,
   ViewHistory,
@@ -218,7 +214,6 @@ const Profile: React.FC<Props> = ({route}) => {
     },
     [],
   );
-  console.log(company);
 
   const handleUpdateStatus = useCallback(
     async (id, status): Promise<void> => {
@@ -269,61 +264,6 @@ const Profile: React.FC<Props> = ({route}) => {
         />
         <ProfileName>{user.name}</ProfileName>
         <ProfileOffice>{user.office}</ProfileOffice>
-        {/* <MainView>
-          <ViewProduction>
-            <Icon
-              name="award"
-              size={20}
-              color="#fe3e31"
-              style={{
-                backgroundColor: '#f8dcdd',
-                borderRadius: 20,
-                height: 40,
-                width: 40,
-                textAlign: 'center',
-                textAlignVertical: 'center',
-              }}
-            />
-            <ProductionText>1280</ProductionText>
-            <DescriptionText>Dia</DescriptionText>
-          </ViewProduction>
-
-          <ViewProduction>
-            <Icon
-              name="bookmark"
-              size={20}
-              color="#b701ff"
-              style={{
-                backgroundColor: '#eed4fb',
-                borderRadius: 20,
-                height: 40,
-                width: 40,
-                textAlign: 'center',
-                textAlignVertical: 'center',
-              }}
-            />
-            <ProductionText>1280</ProductionText>
-            <DescriptionText>Semana</DescriptionText>
-          </ViewProduction>
-
-          <ViewProduction>
-            <Icon
-              name="calendar"
-              size={20}
-              color="#fd9221"
-              style={{
-                backgroundColor: '#f8e3b6',
-                borderRadius: 20,
-                height: 40,
-                width: 40,
-                textAlign: 'center',
-                textAlignVertical: 'center',
-              }}
-            />
-            <ProductionText>1280</ProductionText>
-            <DescriptionText>Mês</DescriptionText>
-          </ViewProduction>
-        </MainView> */}
 
         <RegisterProductionButton
           onPress={() => navigate('RegisterProduction', {user})}>

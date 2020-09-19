@@ -41,30 +41,6 @@ export const ProfileOffice = styled.Text`
   font-weight: 600;
 `;
 
-export const MainView = styled.View`
-  flex-direction: row;
-  justify-content: space-around;
-  width: 300px;
-  margin-top: 10px;
-`;
-
-export const ViewProduction = styled.View`
-  flex-direction: column;
-  align-items: center;
-`;
-export const ProductionText = styled.Text`
-  color: #eee;
-  font-size: 20px;
-  font-weight: bold;
-  margin: 5px 0;
-`;
-
-export const DescriptionText = styled.Text`
-  color: #eee;
-  font-size: 12px;
-  font-weight: bold;
-`;
-
 export const RegisterProductionButton = styled.TouchableOpacity`
   height: 40px;
   width: 250px;
@@ -96,9 +72,12 @@ export const ViewTextHistory = styled.Text`
   font-size: 16px;
 `;
 
-export const HistoryView = styled.View``;
-
 export const FilterButton = styled.TouchableOpacity``;
+
+export const TitleProduction = styled.Text`
+  color: #eee;
+  font-size: 16px;
+`;
 
 export const ProductionHistory = styled.TouchableOpacity<TouchableProps>`
   position: relative;
@@ -108,11 +87,6 @@ export const ProductionHistory = styled.TouchableOpacity<TouchableProps>`
   padding: 10px;
   margin-top: 10px;
   margin: 5px 0;
-`;
-
-export const TitleProduction = styled.Text`
-  color: #eee;
-  font-size: 16px;
 `;
 
 export const DateProduction = styled.Text`
@@ -131,60 +105,12 @@ export const BottomView = styled.View`
   margin-top: 5px;
 `;
 
-export const FilterView = styled.View`
-  position: relative;
-  height: 350px;
-  width: 380px;
-  border-radius: 10px;
-  background: #111110;
-  align-self: center;
-  align-items: center;
-  justify-content: center;
-  margin: auto 0;
-  padding: 10px;
-  border: 1px solid #999;
-`;
-
 export const Title = styled.Text`
   color: #999;
   font-size: 16px;
   font-weight: bold;
   padding: 5px 0;
   align-self: flex-start;
-`;
-
-export const ButtonFieldDate = styled.TouchableOpacity``;
-
-export const CloseButton = styled.TouchableOpacity`
-  position: absolute;
-  right: 10px;
-  top: 10px;
-`;
-
-export const ConfirmButton = styled.TouchableOpacity`
-  background: #999;
-  width: 140px;
-  height: 30px;
-  border-radius: 10px;
-  margin: 10px 0;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const ConfirmButtonText = styled.Text`
-  color: #333;
-  font-weight: bold;
-`;
-
-export const ChoiceCompany = styled.View`
-  background: #1a1a1d;
-  max-height: 54px;
-  margin: 10px 0 0;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  padding: 5px;
-  width: 100%;
 `;
 
 export const ArrowDownContainer = styled.View`
