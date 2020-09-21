@@ -1,7 +1,7 @@
 import React from 'react';
-import {TouchableOpacityProps} from 'react-native';
+import { TouchableOpacityProps } from 'react-native';
 
-import {Container, ButtonText} from './styles';
+import { Container, ButtonText } from './styles';
 
 interface ButtonProps extends TouchableOpacityProps {
   radius?: number;
@@ -9,7 +9,7 @@ interface ButtonProps extends TouchableOpacityProps {
   height?: number;
 }
 
-const Button: React.FC<ButtonProps> = ({children, ...rest}) => {
+const Button: React.FC<ButtonProps> = ({ children, ...rest }) => {
   return (
     <Container {...rest}>
       <ButtonText>{children}</ButtonText>

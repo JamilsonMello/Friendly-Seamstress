@@ -36,7 +36,8 @@ const FabButton: React.FC<TouchableWithoutFeedbackProps> = ({ ...rest }) => {
             onPress={() => {
               handleToggle();
               navigate('RegisterCompany');
-            }}>
+            }}
+          >
             <AnimatedCompanyButton
               style={{
                 transform: [
@@ -44,7 +45,8 @@ const FabButton: React.FC<TouchableWithoutFeedbackProps> = ({ ...rest }) => {
                     scale: animation,
                   },
                 ],
-              }}>
+              }}
+            >
               <Icon name="home" size={30} color="#ddd" />
             </AnimatedCompanyButton>
           </TouchableWithoutFeedback>
@@ -53,7 +55,8 @@ const FabButton: React.FC<TouchableWithoutFeedbackProps> = ({ ...rest }) => {
             onPress={() => {
               handleToggle();
               navigate('RegisterUser');
-            }}>
+            }}
+          >
             <AnimatedRegisterButton
               style={{
                 transform: [
@@ -61,7 +64,8 @@ const FabButton: React.FC<TouchableWithoutFeedbackProps> = ({ ...rest }) => {
                     scale: animation,
                   },
                 ],
-              }}>
+              }}
+            >
               <Icon name="user-plus" size={30} color="#ddd" />
             </AnimatedRegisterButton>
           </TouchableWithoutFeedback>
@@ -85,7 +89,8 @@ const FabButton: React.FC<TouchableWithoutFeedbackProps> = ({ ...rest }) => {
                 }),
               },
             ],
-          }}>
+          }}
+        >
           <Icon name="plus" size={30} color={`${open ? '#00FFFF' : '#ddd'}`} />
         </AnimatedAddButton>
       </TouchableWithoutFeedback>

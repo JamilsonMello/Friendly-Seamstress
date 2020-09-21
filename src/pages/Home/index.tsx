@@ -1,12 +1,12 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {FlatList, TouchableOpacity, ActivityIndicator} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
-import {firebase} from '@react-native-firebase/firestore';
+import { firebase } from '@react-native-firebase/firestore';
 
 import FabButton from '../../components/FabButton';
-import {useAuth} from '../../hooks/context/AuthProvider';
-import {useCompany} from '../../hooks/context/CompaniesProvider';
+import { useAuth } from '../../hooks/context/AuthProvider';
+import { useCompany } from '../../hooks/context/CompaniesProvider';
 
 import {
   Container,
@@ -41,9 +41,9 @@ const Home: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [users, setUsers] = useState<UserProps[]>([] as UserProps[]);
 
-  const {provider} = useAuth();
-  const {navigate} = useNavigation();
-  const {saveComapanies} = useCompany();
+  const { provider } = useAuth();
+  const { navigate } = useNavigation();
+  const { saveComapanies } = useCompany();
 
   const loadData = useCallback(async () => {
     const [usersData, companiesData] = await Promise.all([
@@ -112,10 +112,11 @@ const Home: React.FC = () => {
         refreshing={refreshing}
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => String(item.user_id)}
-        renderItem={({item}) => (
+        renderItem={({ item }) => (
           <User
             key={item.user_id}
-            onPress={() => navigate('Profile', {user: item})}>
+            onPress={() => navigate('Profile', { user: item })}
+          >
             <ViewLeft>
               <UserImage
                 source={{

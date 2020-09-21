@@ -1,9 +1,9 @@
-import React, {useState, useCallback} from 'react';
-import {Picker} from '@react-native-community/picker';
-import {Modal, ModalProps} from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { Picker } from '@react-native-community/picker';
+import { Modal, ModalProps } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
-import {useCompany} from '../../hooks/context/CompaniesProvider';
+import { useCompany } from '../../hooks/context/CompaniesProvider';
 import Calender from '../Calender';
 import Input from '../Input';
 
@@ -47,7 +47,7 @@ const ModalFilter: React.FC<ModalFilterProps> = ({
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [selectedValue, setSelectedValue] = useState<React.ReactText>();
 
-  const {loadCompanies} = useCompany();
+  const { loadCompanies } = useCompany();
 
   const handleCloseModal = useCallback(() => {
     handleVisible();
@@ -67,7 +67,8 @@ const ModalFilter: React.FC<ModalFilterProps> = ({
             right: 10,
             left: 10,
           }}
-          onPress={() => handleCloseModal()}>
+          onPress={() => handleCloseModal()}
+        >
           <Icon color="#999" size={30} name="x" />
         </CloseButton>
         <Title>De</Title>
@@ -75,7 +76,8 @@ const ModalFilter: React.FC<ModalFilterProps> = ({
           onPress={() => {
             setShowCalendar((state) => !state);
             fieldSelected(0);
-          }}>
+          }}
+        >
           <Input
             icon="calendar"
             editable={false}
@@ -88,7 +90,8 @@ const ModalFilter: React.FC<ModalFilterProps> = ({
           onPress={() => {
             setShowCalendar((state) => !state);
             fieldSelected(1);
-          }}>
+          }}
+        >
           <Input
             icon="calendar"
             editable={false}
@@ -108,7 +111,8 @@ const ModalFilter: React.FC<ModalFilterProps> = ({
               height: 50,
               width: '100%',
               color: '#ddd',
-            }}>
+            }}
+          >
             {loadCompanies().map((data) => (
               <Picker.Item
                 key={data.id}

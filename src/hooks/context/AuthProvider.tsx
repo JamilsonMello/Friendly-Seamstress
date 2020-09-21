@@ -77,7 +77,8 @@ const AuthProvider: React.FC = ({ children }) => {
         signed: !!data.uid,
         loading,
         signOut,
-      }}>
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

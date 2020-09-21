@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useCallback, useState} from 'react';
+import React, { createContext, useContext, useCallback, useState } from 'react';
 
 interface CompaniesProps {
   id: string;
@@ -18,7 +18,7 @@ const CompanyContext = createContext<CompaniesProviderProps>(
   {} as CompaniesProviderProps,
 );
 
-const CompaniesProvider: React.FC = ({children}) => {
+const CompaniesProvider: React.FC = ({ children }) => {
   const [companies, setCompanies] = useState<CompaniesProps[]>(
     [] as CompaniesProps[],
   );
@@ -40,7 +40,7 @@ const CompaniesProvider: React.FC = ({children}) => {
   }, [companies]);
 
   return (
-    <CompanyContext.Provider value={{saveComapanies, loadCompanies}}>
+    <CompanyContext.Provider value={{ saveComapanies, loadCompanies }}>
       {children}
     </CompanyContext.Provider>
   );
@@ -54,4 +54,4 @@ function useCompany(): CompaniesProviderProps {
   return context;
 }
 
-export {CompaniesProvider, useCompany};
+export { CompaniesProvider, useCompany };

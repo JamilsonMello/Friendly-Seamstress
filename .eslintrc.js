@@ -34,6 +34,7 @@ module.exports = {
     'no-return-assign': 'off',
     'react/prop-types': 'off',
     'react/jsx-closing-bracket-location': 'off',
+    'no-use-before-define': 'off',
     '@typescript-eslint/explicit-function-return-type': [
       'error',
       {
