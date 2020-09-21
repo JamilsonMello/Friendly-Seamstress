@@ -122,7 +122,8 @@ const RegisterCompany: React.FC = () => {
         style={{ flex: 1 }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="always"
-        canCancelContentTouches={false}>
+        canCancelContentTouches={false}
+      >
         <AnimationIcon
           delay={350}
           useNativeDriver

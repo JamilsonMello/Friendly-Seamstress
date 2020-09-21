@@ -1,7 +1,7 @@
-import React, {useCallback} from 'react';
-import {useWindowDimensions} from 'react-native';
-import {format} from 'date-fns';
-import {CalendarList, CalendarListBaseProps} from 'react-native-calendars';
+import React, { useCallback } from 'react';
+import { useWindowDimensions } from 'react-native';
+import { format } from 'date-fns';
+import { CalendarList, CalendarListBaseProps } from 'react-native-calendars';
 
 interface SelectedDateProps {
   day: number;
@@ -19,11 +19,11 @@ const Calender: React.FC<CalendarProps> = ({
   handleDate,
   handleCloseCalendar,
 }) => {
-  const {width, height} = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
 
   const handleDateSubmit = useCallback(
     (event: SelectedDateProps): void => {
-      const {day, month, year} = event;
+      const { day, month, year } = event;
 
       const formatted = format(
         new Date(year, month - 1, day),

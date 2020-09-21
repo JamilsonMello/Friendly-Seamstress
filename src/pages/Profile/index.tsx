@@ -1,13 +1,13 @@
-import React, {useEffect, useCallback, useState, useMemo} from 'react';
-import {FlatList, useWindowDimensions, TouchableOpacity} from 'react-native';
-import {StackScreenProps} from '@react-navigation/stack';
+import React, { useEffect, useCallback, useState, useMemo } from 'react';
+import { FlatList, useWindowDimensions, TouchableOpacity } from 'react-native';
+import { StackScreenProps } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Feather';
-import {firebase} from '@react-native-firebase/firestore';
-import {useNavigation} from '@react-navigation/native';
-import {format} from 'date-fns';
+import { firebase } from '@react-native-firebase/firestore';
+import { useNavigation } from '@react-navigation/native';
+import { format } from 'date-fns';
 
-import {useCompany} from '../../hooks/context/CompaniesProvider';
-import {numberFormat} from '../../utils/format';
+import { useCompany } from '../../hooks/context/CompaniesProvider';
+import { numberFormat } from '../../utils/format';
 import ModalFilter from '../../components/ModalFilter';
 
 import {
@@ -82,7 +82,7 @@ type RootStackParamList = {
 
 type Props = StackScreenProps<RootStackParamList, 'Profile'>;
 
-const Profile: React.FC<Props> = ({route}) => {
+const Profile: React.FC<Props> = ({ route }) => {
   const [history, setHistory] = useState<HistoryProps[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [date, setDate] = useState<DateProps>({} as DateProps);
@@ -93,14 +93,14 @@ const Profile: React.FC<Props> = ({route}) => {
     {} as DateFormattedProps,
   );
 
-  const {width} = useWindowDimensions();
-  const {user} = route.params;
+  const { width } = useWindowDimensions();
+  const { user } = route.params;
 
-  const {navigate} = useNavigation();
-  const {loadCompanies} = useCompany();
+  const { navigate } = useNavigation();
+  const { loadCompanies } = useCompany();
 
   const loadHistory = useCallback(async () => {
-    const {docs} = await firebase
+    const { docs } = await firebase
       .firestore()
       .collection('production')
       .where('provider_id', '==', `${user.provider_id}`)
@@ -124,13 +124,13 @@ const Profile: React.FC<Props> = ({route}) => {
     setHistory(dataArray as HistoryProps[]);
   }, [user]);
 
-  const {total, value} = useMemo(() => {
+  const { total, value } = useMemo(() => {
     const totalValue = history?.reduce(
       (acc, data) => ({
         total: acc.total += data.quantity,
         value: acc.value += data.value * data.quantity,
       }),
-      {total: 0, value: 0},
+      { total: 0, value: 0 },
     );
 
     const totalSum = numberFormat(totalValue.value);
@@ -153,7 +153,7 @@ const Profile: React.FC<Props> = ({route}) => {
 
     setModalVisible((state) => !state);
 
-    const {docs} = await firebase
+    const { docs } = await firebase
       .firestore()
       .collection('production')
       .where('provider_id', '==', `${user.provider_id}`)
@@ -187,7 +187,7 @@ const Profile: React.FC<Props> = ({route}) => {
 
   const handleDateSubmit = useCallback(
     (formattedDate: string, dateEvent: SelectedDateProps) => {
-      const {day, month, year} = dateEvent;
+      const { day, month, year } = dateEvent;
 
       setDateFormatted({
         initialDate: field === 0 ? formattedDate : dateFormatted.initialDate,
@@ -266,7 +266,8 @@ const Profile: React.FC<Props> = ({route}) => {
         <ProfileOffice>{user.office}</ProfileOffice>
 
         <RegisterProductionButton
-          onPress={() => navigate('RegisterProduction', {user})}>
+          onPress={() => navigate('RegisterProduction', { user })}
+        >
           <RegisterProductionButtonText>Cadastrar</RegisterProductionButtonText>
         </RegisterProductionButton>
 
@@ -281,7 +282,8 @@ const Profile: React.FC<Props> = ({route}) => {
               justifyContent: 'center',
               alignSelf: 'center',
               left: (width - 60) / 2,
-            }}>
+            }}
+          >
             <Icon
               name={`${!showTotal ? 'chevron-down' : 'chevron-up'}`}
               size={25}
@@ -305,10 +307,11 @@ const Profile: React.FC<Props> = ({route}) => {
         data={history}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({item, index}) => (
+        renderItem={({ item, index }) => (
           <ProductionHistory
             lastItem={history.length - 1 === index}
-            onPress={() => navigate('Details', {item})}>
+            onPress={() => navigate('Details', { item })}
+          >
             <TitleProduction>
               {`${item.title.replace(
                 item.title.charAt(0),
@@ -319,7 +322,8 @@ const Profile: React.FC<Props> = ({route}) => {
               )}`}
             </TitleProduction>
             <ButtonIcon
-              onPress={() => handleUpdateStatus(item.id, item.status)}>
+              onPress={() => handleUpdateStatus(item.id, item.status)}
+            >
               <Icon
                 name="check-circle"
                 size={20}

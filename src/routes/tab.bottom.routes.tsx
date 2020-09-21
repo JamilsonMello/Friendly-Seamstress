@@ -32,7 +32,8 @@ const TabRoutes: React.FC = () => {
         },
         activeTintColor: '#00FFFF',
         inactiveBackgroundColor: '#3E404D',
-      }}>
+      }}
+    >
       <Tab.Screen
         name="Deliveries"
         component={Deliveries}

@@ -203,7 +203,8 @@ const RegisterProduction: React.FC = () => {
         pinchGestureEnabled={!showCalendar}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="always"
-        canCancelContentTouches={false}>
+        canCancelContentTouches={false}
+      >
         <AnimationIcon
           delay={350}
           useNativeDriver
@@ -306,7 +307,8 @@ const RegisterProduction: React.FC = () => {
             defaultValue=""
             render={() => (
               <TouchableOpacity
-                onPress={() => setShowCalendar((state) => !state)}>
+                onPress={() => setShowCalendar((state) => !state)}
+              >
                 <Input
                   erro={errors.received}
                   icon="calendar"
@@ -329,7 +331,8 @@ const RegisterProduction: React.FC = () => {
                 height: 50,
                 width: '100%',
                 color: '#fff',
-              }}>
+              }}
+            >
               {loadCompanies().map((value) => (
                 <Picker.Item
                   key={value.id}
@@ -368,7 +371,8 @@ const RegisterProduction: React.FC = () => {
         <Animation.View delay={420} useNativeDriver animation="bounceIn">
           <RegisterButton
             onPress={handleSubmit(handleSubmitButton)}
-            disabled={showCalendar}>
+            disabled={showCalendar}
+          >
             <RegisterButtonText>
               {loading ? (
                 <ActivityIndicator color="#00ffff" size="small" />
