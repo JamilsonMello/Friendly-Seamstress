@@ -33,7 +33,8 @@ import { useAuth } from '../../hooks/context/AuthProvider';
 import Input from '../../components/Input';
 import { numberFormat } from '../../utils/format';
 import { useCompany } from '../../hooks/context/CompaniesProvider';
-// import ModalFilter from '../../components/ModalFilter';
+import Calendar from '../../components/Calender';
+import ModalFilter from '../../components/ModalFilter';
 
 import {
   Container,
@@ -137,13 +138,13 @@ const Deliveries: React.FC = () => {
   const [loadingRequest, setLoadingRequest] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [showTotal, setShowTotal] = useState<boolean>(false);
   const [field, setField] = useState<number>(0);
   const [openCalendar, setOpenCalendar] = useState(0);
   const [filter, setFilter] = useState(false);
   const [selectedValue, setSelectedValue] = useState<React.ReactText>('');
   const [getMonthToSearch, setGetMonthToSearch] = useState<number>();
+  const [company, setCompany] = useState<string | undefined>('Todos');
   const [compareDate, setCompareDate] = useState<CompareDateProps>(
     {} as CompareDateProps,
   );
@@ -184,53 +185,27 @@ const Deliveries: React.FC = () => {
   );
 
   const handleDateSubmit = useCallback(
-    (event: SelectedDateProps): void => {
-      const { day, month, year, dateString } = event;
+    (formattedDate: string, dateEvent: SelectedDateProps) => {
+      const { day, month, year } = dateEvent;
 
-      const formatted = format(
-        new Date(year, month - 1, day),
-        "dd'/'MM'/'yyyy",
-      );
+      setFilterDatesFormatted({
+        initialDate:
+          field === 0 ? formattedDate : filterDatesFormatted.initialDate,
+        finalDate: field === 1 ? formattedDate : filterDatesFormatted.finalDate,
+      });
 
-      const initial =
-        field === 0 ? new Date(year, month - 1, day) : compareDate.initial;
-      const final =
-        field === 1 ? new Date(year, month - 1, day) : compareDate.final;
-
-      setCompareDate({ initial, final });
-
-      if (filter) {
-        setFilterDatesFormatted({
-          initialDate:
-            field === 0 ? formatted : filterDatesFormatted.initialDate,
-          finalDate: field === 1 ? formatted : filterDatesFormatted.finalDate,
-        });
-        setSelectDate({ day, month, year, dateString });
-        setShowCalendar(false);
-
-        return;
-      }
-
-      if (
-        new Date(year, month - 1, day).getTime() >
-        new Date(Date.now()).getTime()
-      ) {
-        Alert.alert(
-          'Selecione Outra Data',
-          'Você não pode registrar datas futura',
-        );
-        return;
-      }
-
-      setDateFormatted(formatted);
-
-      setSelectDate({ day, month, year, dateString });
-      setValue('date', new Date(dateString));
-      clearErrors('date');
-      setShowCalendar(false);
+      setCompareDate({
+        initial:
+          field === 0 ? new Date(year, month - 1, day) : compareDate.initial,
+        final: field === 1 ? new Date(year, month - 1, day) : compareDate.final,
+      });
     },
-    [setValue, clearErrors, filter, filterDatesFormatted, compareDate, field],
+    [field, filterDatesFormatted, compareDate],
   );
+
+  const handleFieldSelected = useCallback((fieldValue: number): void => {
+    setField(fieldValue);
+  }, []);
 
   const handleSubmitButton = useCallback(
     async ({
@@ -381,6 +356,17 @@ const Deliveries: React.FC = () => {
     [provider.uid],
   );
 
+  const handleModalVisible = useCallback(() => {
+    setModalVisible(!modalVisible);
+  }, [modalVisible]);
+
+  const handleCompany = useCallback(
+    (companySelected: string | undefined): void => {
+      setCompany(companySelected);
+    },
+    [],
+  );
+
   const handleFilterHistory = useCallback(async (): Promise<void> => {
     setLoadingHistoryList(true);
 
@@ -389,8 +375,14 @@ const Deliveries: React.FC = () => {
 
       return;
     }
+    setGetMonthToSearch(compareDate.initial.getMonth() + 1);
 
     setModalVisible(false);
+
+    const companyFilter =
+      company === 'Todos'
+        ? loadCompanies().map((data) => data.name)
+        : [company];
 
     const { docs } = await firebase
       .firestore()
@@ -398,7 +390,7 @@ const Deliveries: React.FC = () => {
       .where('provider_id', '==', `${provider.uid}`)
       .where('received', '>=', compareDate.initial.getTime())
       .where('received', '<=', compareDate.final.getTime())
-      .where('company', '==', selectedValue || loadCompanies()[0].name)
+      .where('company', 'in', companyFilter)
       .orderBy('received', 'desc')
       .get();
 
@@ -413,8 +405,7 @@ const Deliveries: React.FC = () => {
     setFilterDatesFormatted({} as DatesFormattedProps);
     setLoadingHistoryList(false);
     setFilter(false);
-    setGetMonthToSearch(compareDate.initial.getMonth() + 1);
-  }, [provider.uid, compareDate, selectedValue, loadCompanies]);
+  }, [provider.uid, compareDate, company, loadCompanies]);
 
   const handleRefreshing = useCallback(async () => {
     setRefreshing(true);
@@ -428,6 +419,7 @@ const Deliveries: React.FC = () => {
       setFilter(true);
       setModalVisible(true);
       setCompareDate({} as CompareDateProps);
+      setGetMonthToSearch(id);
       setOpenCalendar(id);
       Vibration.vibrate(200);
     },
@@ -601,83 +593,22 @@ const Deliveries: React.FC = () => {
           />
         )}
 
-        <Modal visible={modalVisible} animationType="slide" transparent>
-          {filter ? (
-            // <ModalFilter
-            // handleFilterHistory={handleFilterHistory}
-            // visible={modalVisible}
-            // fieldSelected={handleFieldSelected}
-            // handleVisible={handleModalVisible}
-            // handleDateSubmit={handleDateSubmit}
-            // finalDate={dateFormatted.finalDate}
-            // initialDate={dateFormatted.initialDate}
-            // companySelected={handleCompany}
-            /// >
-            <FilterView>
-              <CloseButton
-                onPress={() => {
-                  setModalVisible(!modalVisible);
-                  setFilter(false);
-                  setFilterDatesFormatted({} as DatesFormattedProps);
-                }}
-              >
-                <Icon color="#999" size={30} name="x" />
-              </CloseButton>
-              <Title>De</Title>
-              <ButtonFieldDate
-                onPress={() => {
-                  setShowCalendar((state) => !state);
-                  setField(0);
-                }}
-              >
-                <Input
-                  icon="calendar"
-                  editable={false}
-                  value={filterDatesFormatted.initialDate}
-                  placeholder="Escolha a data inicial"
-                />
-              </ButtonFieldDate>
-              <Title>Ate</Title>
-              <ButtonFieldDate
-                onPress={() => {
-                  setShowCalendar((state) => !state);
-                  setField(1);
-                }}
-              >
-                <Input
-                  icon="calendar"
-                  editable={false}
-                  value={filterDatesFormatted.finalDate}
-                  placeholder="Escolha a data final"
-                />
-              </ButtonFieldDate>
-
-              <ChoiceCompany>
-                <Picker
-                  selectedValue={selectedValue}
-                  onValueChange={(itemValue) => setSelectedValue(itemValue)}
-                  style={{
-                    height: 50,
-                    width: '100%',
-                    color: '#ddd',
-                  }}
-                >
-                  {loadCompanies().map((value) => (
-                    <Picker.Item
-                      key={value.id}
-                      color="#000"
-                      label={`${value.name}`}
-                      value={`${value.name}`}
-                    />
-                  ))}
-                </Picker>
-              </ChoiceCompany>
-
-              <ConfirmButton onPress={() => handleFilterHistory()}>
-                <ConfirmButtonText>Confirmar</ConfirmButtonText>
-              </ConfirmButton>
-            </FilterView>
-          ) : (
+        {/* <Modal visible={modalVisible} animationType="slide" transparent>
+          {filter ? ( */}
+        <>
+          <ModalFilter
+            handleFilterHistory={handleFilterHistory}
+            visible={modalVisible}
+            fieldSelected={handleFieldSelected}
+            handleVisible={handleModalVisible}
+            handleDateSubmit={handleDateSubmit}
+            finalDate={filterDatesFormatted.finalDate}
+            initialDate={filterDatesFormatted.initialDate}
+            companySelected={handleCompany}
+            openCalendar={openCalendar}
+          />
+        </>
+        {/* ) : (
             <RegisterNewOrderView
               keyboardShouldPersistTaps="always"
               canCancelContentTouches={false}
@@ -830,40 +761,7 @@ const Deliveries: React.FC = () => {
               </RegisterButton>
             </RegisterNewOrderView>
           )}
-          {showCalendar && (
-            <CalendarList
-              horizontal
-              pagingEnabled
-              calendarWidth={width - 30}
-              current={`${new Date(
-                new Date().getFullYear(),
-                openCalendar - 1,
-                new Date().getDate(),
-              )}`}
-              theme={{
-                calendarBackground: '#444242',
-                monthTextColor: '#fff',
-                dayTextColor: '#fff',
-                todayTextColor: '#00FFee',
-                textSectionTitleColor: '#fff',
-              }}
-              markedDates={{
-                [selectedDate.dateString]: {
-                  selected: true,
-                  marked: true,
-                  selectedColor: '#00FFFF',
-                },
-              }}
-              style={{
-                position: 'absolute',
-                bottom: height / 4,
-                alignSelf: 'center',
-                width: width - 30,
-              }}
-              onDayPress={handleDateSubmit}
-            />
-          )}
-        </Modal>
+        </Modal> */}
       </Container>
     </SafeAreaView>
   );

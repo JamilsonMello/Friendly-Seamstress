@@ -30,6 +30,7 @@ interface ModalFilterProps extends ModalProps {
   handleVisible: () => void;
   fieldSelected: (field: number) => void;
   companySelected: (company: string) => void;
+  openCalendar?: number;
   initialDate: string;
   finalDate: string;
 }
@@ -41,6 +42,7 @@ const ModalFilter: React.FC<ModalFilterProps> = ({
   fieldSelected,
   companySelected,
   visible,
+  openCalendar,
   initialDate,
   finalDate,
 }) => {
@@ -132,6 +134,7 @@ const ModalFilter: React.FC<ModalFilterProps> = ({
         <Calender
           handleCloseCalendar={handleCloseCalendar}
           handleDate={handleDateSubmit}
+          openCalendar={openCalendar}
         />
       )}
     </Modal>

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useWindowDimensions } from 'react-native';
 import { format } from 'date-fns';
 import { CalendarList, CalendarListBaseProps } from 'react-native-calendars';
@@ -13,13 +13,25 @@ interface SelectedDateProps {
 interface CalendarProps extends CalendarListBaseProps {
   handleDate: (dateFormatted: string, date: SelectedDateProps) => void;
   handleCloseCalendar?: () => void;
+  openCalendar?: number;
 }
 
 const Calender: React.FC<CalendarProps> = ({
   handleDate,
   handleCloseCalendar,
+  openCalendar,
 }) => {
   const { width, height } = useWindowDimensions();
+
+  const currentDate = useMemo(() => {
+    const date = new Date();
+
+    if (openCalendar) {
+      date.setMonth(openCalendar - 1);
+    }
+
+    return date;
+  }, [openCalendar]);
 
   const handleDateSubmit = useCallback(
     (event: SelectedDateProps): void => {
@@ -43,6 +55,7 @@ const Calender: React.FC<CalendarProps> = ({
       horizontal
       pagingEnabled
       calendarWidth={width - 30}
+      current={currentDate}
       theme={{
         calendarBackground: '#444242',
         monthTextColor: '#fff',

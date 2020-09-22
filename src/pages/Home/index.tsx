@@ -77,7 +77,6 @@ const Home: React.FC = () => {
     setUsers(dataArray);
     setLoading(false);
   }, [provider, saveComapanies]);
-  console.log(users);
 
   const handleRefreshing = useCallback(() => {
     setRefreshing(true);
