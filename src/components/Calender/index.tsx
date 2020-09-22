@@ -12,7 +12,7 @@ interface SelectedDateProps {
 
 interface CalendarProps extends CalendarListBaseProps {
   handleDate: (dateFormatted: string, date: SelectedDateProps) => void;
-  handleCloseCalendar: () => void;
+  handleCloseCalendar?: () => void;
 }
 
 const Calender: React.FC<CalendarProps> = ({
@@ -31,7 +31,9 @@ const Calender: React.FC<CalendarProps> = ({
       );
 
       handleDate(formatted, event);
-      handleCloseCalendar();
+      if (handleCloseCalendar) {
+        handleCloseCalendar();
+      }
     },
     [handleDate, handleCloseCalendar],
   );

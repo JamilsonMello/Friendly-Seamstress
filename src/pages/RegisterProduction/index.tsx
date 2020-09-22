@@ -1,8 +1,7 @@
 /* eslint-disable import/no-duplicates */
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useMemo } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers';
-import { CalendarList } from 'react-native-calendars';
 import { useRoute } from '@react-navigation/native';
 import {
   TextInput,
@@ -17,11 +16,13 @@ import * as yup from 'yup';
 import * as Animation from 'react-native-animatable';
 import { firebase } from '@react-native-firebase/firestore';
 import { Picker } from '@react-native-community/picker';
-
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { isFuture } from 'date-fns';
+
 import Input from '../../components/Input';
 import { useAuth } from '../../hooks/context/AuthProvider';
 import { useCompany } from '../../hooks/context/CompaniesProvider';
+import Calendar from '../../components/Calender';
 
 import {
   Container,
@@ -120,6 +121,15 @@ const RegisterProduction: React.FC = () => {
     mode: 'onSubmit',
   });
 
+  const companies = useMemo(
+    () => loadCompanies().filter((value) => value.name !== 'Todos'),
+    [loadCompanies],
+  );
+
+  const handleCloseCalendar = useCallback(() => {
+    setShowCalendar(!showCalendar);
+  }, [showCalendar]);
+
   const handleSubmitButton = useCallback(
     async ({
       title,
@@ -148,7 +158,7 @@ const RegisterProduction: React.FC = () => {
           operation,
           quantity,
           value,
-          company: selectedValue || loadCompanies()[0].name,
+          company: selectedValue || companies[0].name,
           received: new Date(year, month - 1, day).getTime(),
           description,
           provider_id: provider.uid,
@@ -166,16 +176,16 @@ const RegisterProduction: React.FC = () => {
       provider.uid,
       selectedDate,
       user.user_id,
-      loadCompanies,
+      companies,
       selectedValue,
     ],
   );
 
   const handleDateSubmit = useCallback(
-    (event: SelectedDateProps) => {
+    (formatted, event: SelectedDateProps) => {
       const { day, month, year, dateString } = event;
 
-      if (new Date(dateString).getTime() > new Date(Date.now()).getTime()) {
+      if (isFuture(new Date(year, month - 1, day))) {
         Alert.alert(
           'Selecione Outra Data',
           'Você não pode registrar datas futura',
@@ -184,17 +194,14 @@ const RegisterProduction: React.FC = () => {
         return;
       }
 
-      setDateFormatted(
-        `${day.toString().padStart(2, '0')}/${month
-          .toString()
-          .padStart(2, '0')}/${year}`,
-      );
+      setDateFormatted(formatted);
       setSelectDate({ day, month, year, dateString });
       setShowCalendar((state) => !state);
       setValue('received', new Date(dateString));
       clearErrors('received');
+      handleCloseCalendar();
     },
-    [setValue, clearErrors],
+    [setValue, clearErrors, handleCloseCalendar],
   );
 
   return (
@@ -333,7 +340,7 @@ const RegisterProduction: React.FC = () => {
                 color: '#fff',
               }}
             >
-              {loadCompanies().map((value) => (
+              {companies.map((value) => (
                 <Picker.Item
                   key={value.id}
                   color="#666"
@@ -384,34 +391,7 @@ const RegisterProduction: React.FC = () => {
         </Animation.View>
       </ScrollView>
 
-      {showCalendar && (
-        <CalendarList
-          horizontal
-          pagingEnabled
-          calendarWidth={width - 40}
-          theme={{
-            calendarBackground: '#444242',
-            monthTextColor: '#fff',
-            dayTextColor: '#fff',
-            todayTextColor: '#00FFee',
-            textSectionTitleColor: '#fff',
-          }}
-          markedDates={{
-            [selectedDate.dateString]: {
-              selected: true,
-              marked: true,
-              selectedColor: '#00FFFF',
-            },
-          }}
-          style={{
-            position: 'absolute',
-            bottom: height / 4,
-            alignSelf: 'center',
-            width: width - 40,
-          }}
-          onDayPress={handleDateSubmit}
-        />
-      )}
+      {showCalendar && <Calendar handleDate={handleDateSubmit} />}
     </Container>
   );
 };
