@@ -88,6 +88,7 @@ const Profile: React.FC<Props> = ({ route }) => {
   const [date, setDate] = useState<DateProps>({} as DateProps);
   const [company, setCompany] = useState<string | undefined>('Todos');
   const [showTotal, setShowTotal] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [field, setField] = useState<number>();
   const [dateFormatted, setDateFormatted] = useState<DateFormattedProps>(
     {} as DateFormattedProps,
@@ -241,6 +242,12 @@ const Profile: React.FC<Props> = ({ route }) => {
     setDateFormatted({} as DateFormattedProps);
   }, [modalVisible]);
 
+  const handleRefreshing = useCallback(() => {
+    setRefreshing(true);
+    loadHistory();
+    setRefreshing(false);
+  }, [loadHistory]);
+
   return (
     <Container>
       <ModalFilter
@@ -305,6 +312,8 @@ const Profile: React.FC<Props> = ({ route }) => {
 
       <FlatList
         data={history}
+        onRefresh={handleRefreshing}
+        refreshing={refreshing}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item, index }) => (
