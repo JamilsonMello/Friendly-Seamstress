@@ -121,13 +121,10 @@ export const ArrowDownContainer = styled.View`
 
 export const TotalText = styled.Text`
   color: #fff;
+  letter-spacing: 2px;
 `;
 
 export const TotalValue = styled.Text`
   color: #fff;
+  letter-spacing: 2px;
 `;
-// FilterView,
-//   ButtonFieldDate,
-//   Title,
-//   ConfirmButton,
-//   ConfirmButtonText,

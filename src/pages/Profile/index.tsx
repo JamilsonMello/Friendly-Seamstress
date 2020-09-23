@@ -282,6 +282,7 @@ const Profile: React.FC<Props> = ({ route }) => {
           <ViewTextHistory>Histórico</ViewTextHistory>
 
           <TouchableOpacity
+            hitSlop={{ left: 10, right: 10, bottom: 10, top: 10 }}
             onPress={() => setShowTotal((state) => !state)}
             style={{
               position: 'absolute',
@@ -297,7 +298,10 @@ const Profile: React.FC<Props> = ({ route }) => {
               color="#fff"
             />
           </TouchableOpacity>
-          <FilterButton onPress={() => setModalVisible(!modalVisible)}>
+          <FilterButton
+            hitSlop={{ left: 20, right: 10 }}
+            onPress={() => setModalVisible(!modalVisible)}
+          >
             <Icon name="sliders" size={20} color="#fff" />
           </FilterButton>
         </ViewHistory>

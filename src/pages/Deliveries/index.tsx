@@ -389,14 +389,8 @@ const Deliveries: React.FC = () => {
           </NewOrderButton>
         </MonthsView>
 
-        {showTotal && (
-          <ArrowDownContainer>
-            <TotalText>{`Total:  ${handleTotalValue.total}`}</TotalText>
-            <TotalValue>{`${handleTotalValue.value}`}</TotalValue>
-          </ArrowDownContainer>
-        )}
-
         <TouchableOpacity
+          hitSlop={{ left: 10, right: 10, bottom: 10, top: 10 }}
           onPress={() => setShowTotal((state) => !state)}
           style={{
             alignItems: 'center',
@@ -410,6 +404,13 @@ const Deliveries: React.FC = () => {
             color="#fff"
           />
         </TouchableOpacity>
+
+        {showTotal && (
+          <ArrowDownContainer>
+            <TotalText>{`Total:  ${handleTotalValue.total}`}</TotalText>
+            <TotalValue>{`${handleTotalValue.value}`}</TotalValue>
+          </ArrowDownContainer>
+        )}
 
         {loadingHistoryList ? (
           <ActivityIndicator
