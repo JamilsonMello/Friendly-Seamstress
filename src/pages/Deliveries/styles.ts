@@ -42,7 +42,7 @@ export const ButtonIcon = styled.TouchableOpacity`
 `;
 
 export const ProductItem = styled.TouchableOpacity`
-  height: 70px;
+  height: 80px;
   background: #1a1a1d;
   padding: 10px;
   margin-top: 10px;
