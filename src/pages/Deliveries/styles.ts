@@ -97,35 +97,6 @@ export const MonthButtonText = styled.Text`
   text-align: center;
 `;
 
-export const CloseButton = styled.TouchableOpacity`
-  align-self: flex-end;
-`;
-
-export const RegisterNewOrderView = styled.ScrollView`
-  border-radius: 10px;
-  background: #111110;
-  padding: 30px 10px;
-  border: 1px solid #999;
-`;
-
-export const RegisterButton = styled.TouchableOpacity`
-  background: #1a1a1d;
-  align-self: center;
-  width: 300px;
-  height: 35px;
-  border-radius: 5px;
-  border: 1px solid #f1f1f1;
-  align-items: center;
-  justify-content: center;
-  margin: 30px 0;
-`;
-
-export const RegisterButtonText = styled.Text`
-  color: #f1f1f1;
-  font-size: 16px;
-  font-weight: 600;
-`;
-
 export const ViewNone = styled.View`
   height: 200px;
   width: 380px;
@@ -142,45 +113,6 @@ export const ViewTextNone = styled.Text`
   font-weight: bold;
 `;
 
-export const FilterView = styled.View`
-  position: relative;
-  height: 370px;
-  width: 380px;
-  border-radius: 10px;
-  background: #111110;
-  align-self: center;
-  align-items: center;
-  justify-content: center;
-  margin: auto 0;
-  padding: 10px;
-  border: 1px solid #999;
-`;
-
-export const Title = styled.Text`
-  color: #999;
-  font-size: 16px;
-  font-weight: bold;
-  padding: 5px 0;
-  align-self: flex-start;
-`;
-
-export const ButtonFieldDate = styled.TouchableOpacity``;
-
-export const ConfirmButton = styled.TouchableOpacity`
-  background: #999;
-  width: 140px;
-  height: 30px;
-  border-radius: 10px;
-  margin: 10px 0;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const ConfirmButtonText = styled.Text`
-  color: #333;
-  font-weight: bold;
-`;
-
 export const ArrowDownContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
@@ -194,14 +126,8 @@ export const TotalText = styled.Text`
 export const TotalValue = styled.Text`
   color: #fff;
 `;
-
-export const ChoiceCompany = styled.View`
-  background: #1a1a1d;
-  max-height: 54px;
-  margin: 10px 0 0;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  padding: 5px;
-  width: 100%;
-`;
+// FilterView,
+//   ButtonFieldDate,
+//   Title,
+//   ConfirmButton,
+//   ConfirmButtonText,
