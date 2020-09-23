@@ -435,6 +435,7 @@ const Deliveries: React.FC = () => {
                 <ProductTopView>
                   <ProductTitle>{`${item.title}  |  ${item.company}`}</ProductTitle>
                   <ButtonIcon
+                    hitSlop={{ left: 10, right: 10, bottom: 10, top: 10 }}
                     onPress={() => handleUpdateStatus(item.id, item.status)}
                   >
                     <Icon

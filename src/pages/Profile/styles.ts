@@ -82,11 +82,11 @@ export const TitleProduction = styled.Text`
 export const ProductionHistory = styled.TouchableOpacity<TouchableProps>`
   position: relative;
   background: #1a1a1d;
+  height: 80px;
   border-radius: 10px;
   border-bottom-color: #ddd;
   padding: 10px;
   margin-top: 10px;
-  margin: 5px 0;
 `;
 
 export const DateProduction = styled.Text`
@@ -102,7 +102,7 @@ export const Quantity = styled.Text`
 export const BottomView = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 5px;
+  margin-top: auto;
 `;
 
 export const Title = styled.Text`

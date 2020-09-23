@@ -335,6 +335,7 @@ const Profile: React.FC<Props> = ({ route }) => {
               )}`}
             </TitleProduction>
             <ButtonIcon
+              hitSlop={{ left: 10, right: 10, bottom: 10, top: 10 }}
               onPress={() => handleUpdateStatus(item.id, item.status)}
             >
               <Icon
