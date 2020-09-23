@@ -1,4 +1,4 @@
-import {TouchableOpacityProps, ViewProps} from 'react-native';
+import { TouchableOpacityProps, ViewProps } from 'react-native';
 import styled from 'styled-components/native';
 
 interface TouchableProps extends TouchableOpacityProps {
@@ -60,7 +60,7 @@ export const RegisterProductionButtonText = styled.Text`
 `;
 
 export const ViewHistory = styled.View<ViewHistoryProps>`
-  width: ${({widthSize}) => widthSize - 30}px;
+  width: ${({ widthSize }) => widthSize - 30}px;
   flex-direction: row;
   justify-content: space-between;
   position: relative;
@@ -121,10 +121,12 @@ export const ArrowDownContainer = styled.View`
 
 export const TotalText = styled.Text`
   color: #fff;
+  letter-spacing: 2px;
 `;
 
 export const TotalValue = styled.Text`
   color: #fff;
+  letter-spacing: 2px;
 `;
 
 export const ButtonIcon = styled.TouchableOpacity`
