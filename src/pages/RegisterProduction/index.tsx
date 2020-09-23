@@ -5,9 +5,8 @@ import { yupResolver } from '@hookform/resolvers';
 import { useRoute } from '@react-navigation/native';
 import {
   TextInput,
+  TouchableOpacity,
   ActivityIndicator,
-  Keyboard,
-  useWindowDimensions,
   ScrollView,
   Alert,
 } from 'react-native';
@@ -16,7 +15,6 @@ import * as yup from 'yup';
 import * as Animation from 'react-native-animatable';
 import { firebase } from '@react-native-firebase/firestore';
 import { Picker } from '@react-native-community/picker';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { isFuture } from 'date-fns';
 
 import Input from '../../components/Input';
@@ -42,8 +40,8 @@ interface DataForm {
   title: string;
   operation: string;
   quantity: string;
-  value: number;
-  received: Date;
+  value: string;
+  received: string;
   description: string;
 }
 
@@ -90,7 +88,6 @@ const RegisterProduction: React.FC = () => {
   const descriptionRef = useRef<TextInput>(null);
 
   const { provider } = useAuth();
-  const { height, width } = useWindowDimensions();
   const { user } = useRoute().params as UserProps;
   const { loadCompanies } = useCompany();
 
@@ -104,7 +101,8 @@ const RegisterProduction: React.FC = () => {
       .required('Campo obrigatório! Apenas números são permitidos')
       .typeError('Campo obrigatório! Digite apenas números'),
     value: yup
-      .number()
+      .string()
+      .transform((_, value) => value.replace(/,/g, '.'))
       .required('Campo obrigatório! Apenas números são permitidos')
       .typeError('Campo obrigatório! Digite apenas números'),
     received: yup
@@ -114,9 +112,14 @@ const RegisterProduction: React.FC = () => {
     description: yup.string().default('Sem descrição'),
   });
 
-  const { handleSubmit, errors, control, setValue, clearErrors } = useForm<
-    DataForm
-  >({
+  const {
+    handleSubmit,
+    errors,
+    reset,
+    control,
+    setValue,
+    clearErrors,
+  } = useForm<DataForm>({
     resolver: yupResolver(schema),
     mode: 'onSubmit',
   });
@@ -141,15 +144,6 @@ const RegisterProduction: React.FC = () => {
       setLoading(true);
       const { day, month, year } = selectedDate;
 
-      setValue('title', '');
-      setValue('operation', '');
-      setValue('quantity', '');
-      setValue('value', undefined);
-      setValue('received', undefined);
-      setValue('description', '');
-      setDateFormatted('');
-      Keyboard.dismiss();
-
       await firebase
         .firestore()
         .collection('production')
@@ -157,7 +151,7 @@ const RegisterProduction: React.FC = () => {
           title,
           operation,
           quantity,
-          value,
+          value: Number(value),
           company: selectedValue || companies[0].name,
           received: new Date(year, month - 1, day).getTime(),
           description,
@@ -168,17 +162,18 @@ const RegisterProduction: React.FC = () => {
           status: false,
         });
 
+      reset({
+        received: '',
+        description: '',
+        quantity: '',
+        title: '',
+        value: '',
+      });
+      setDateFormatted('');
       setLoading(false);
       setSelectDate({} as SelectedDateProps);
     },
-    [
-      setValue,
-      provider.uid,
-      selectedDate,
-      user.user_id,
-      companies,
-      selectedValue,
-    ],
+    [provider.uid, selectedDate, user.user_id, companies, selectedValue, reset],
   );
 
   const handleDateSubmit = useCallback(
@@ -197,7 +192,7 @@ const RegisterProduction: React.FC = () => {
       setDateFormatted(formatted);
       setSelectDate({ day, month, year, dateString });
       setShowCalendar((state) => !state);
-      setValue('received', new Date(dateString));
+      setValue('received', new Date(dateString).toString());
       clearErrors('received');
       handleCloseCalendar();
     },

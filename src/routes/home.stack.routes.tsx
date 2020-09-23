@@ -6,6 +6,7 @@ import RegisterUser from '../pages/RegisterUser';
 import Profile from '../pages/Profile';
 import RegisterProduction from '../pages/RegisterProduction';
 import RegisterCompany from '../pages/RegisterCompany';
+import RegisterNewOrder from '../pages/RegisterNewOrder';
 import TabBar from './tab.bottom.routes';
 
 const Stack = createStackNavigator();
@@ -67,6 +68,17 @@ const HomeStackRoutes: React.FC = () => {
         }}
         name="Profile"
         component={Profile}
+      />
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          headerTitleAlign: 'center',
+          headerTintColor: '#fff',
+          headerTransparent: true,
+          title: 'Novo Pedido',
+        }}
+        name="RegisterNewOrder"
+        component={RegisterNewOrder}
       />
     </Stack.Navigator>
   );
