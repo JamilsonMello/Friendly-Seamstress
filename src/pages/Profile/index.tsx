@@ -323,7 +323,9 @@ const Profile: React.FC<Props> = ({ route }) => {
         renderItem={({ item, index }) => (
           <ProductionHistory
             lastItem={history.length - 1 === index}
-            onPress={() => navigate('Details', { item })}
+            onPress={() => {
+              navigate('Details', { item, collection: 'production' });
+            }}
           >
             <TitleProduction>
               {`${item.title.replace(

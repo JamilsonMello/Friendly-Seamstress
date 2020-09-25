@@ -12,7 +12,7 @@ import { FieldError } from 'react-hook-form';
 import { Container, Icon, TextInput, Error } from './styles';
 
 interface InputProps extends TextInputProps {
-  icon: string;
+  icon?: string;
   erro?: FieldError | undefined;
   name?: string;
   height?: number;
@@ -59,7 +59,7 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
           onBlur={handleInputBlur}
         />
         <Icon
-          name={icon}
+          name={icon || ''}
           size={25}
           color={isFocused || !!value ? '#00FFFF' : '#666360'}
         />

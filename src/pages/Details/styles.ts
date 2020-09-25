@@ -1,4 +1,9 @@
-import styled from 'styled-components/native';
+import styled, { css } from 'styled-components/native';
+import { ViewProps } from 'react-native';
+
+interface EditContainerProps extends ViewProps {
+  transform: any;
+}
 
 export const Container = styled.View`
   flex: 1;
@@ -44,6 +49,7 @@ export const Received = styled.Text`
 `;
 
 export const QuantityView = styled.View`
+  position: relative;
   align-items: center;
   justify-content: center;
   height: 130px;
@@ -92,6 +98,7 @@ export const Delivered = styled.Text`
 `;
 
 export const ValueView = styled.View`
+  position: relative;
   align-items: center;
   justify-content: center;
   height: 130px;
@@ -141,4 +148,35 @@ export const DescriptionText = styled.Text`
   color: #ddd;
   font-size: 14px;
   font-weight: bold;
+`;
+
+export const EditButton = styled.TouchableOpacity`
+  position: absolute;
+  top: 5px;
+  right: 5px;
+`;
+
+export const EditContainer = styled.View<EditContainerProps>`
+  height: 300px;
+  width: 390px;
+  border-radius: 10px;
+  background: #1a1a1a;
+  margin-top: 60%;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const EditField = styled.TextInput`
+  height: 40px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background: #1a1a1d;
+  border-radius: 10px;
+  padding: 10px;
+  width: 360px;
+  margin: 20px 0;
+  border: 1px solid #333;
+  text-align: center;
 `;

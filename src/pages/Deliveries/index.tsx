@@ -430,7 +430,9 @@ const Deliveries: React.FC = () => {
             renderItem={({ item }) => (
               <ProductItem
                 key={item.id}
-                onPress={() => navigate('Details', { item })}
+                onPress={() => {
+                  navigate('Details', { item, collection: 'orders' });
+                }}
               >
                 <ProductTopView>
                   <ProductTitle>{`${item.title}  |  ${item.company}`}</ProductTitle>
