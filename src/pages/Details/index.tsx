@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useCallback,
 } from 'react';
-import { Modal, Keyboard, TextInput, Animated } from 'react-native';
+import { Modal, Keyboard, Animated } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { format } from 'date-fns';
 import Icon from 'react-native-vector-icons/Feather';
