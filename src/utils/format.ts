@@ -6,3 +6,5 @@ export const numberFormat = (value: number): string =>
     style: 'currency',
     currency: 'BRL',
   }).format(value);
+
+export const replaceDot = (value: string): string => value.replace(/,/g, '.');
