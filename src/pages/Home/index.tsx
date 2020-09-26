@@ -70,8 +70,6 @@ const Home: React.FC = () => {
       ...data.data(),
     }));
 
-    console.log(dataCompanies);
-
     saveComapanies(dataCompanies as CompaniesProps[]);
 
     setUsers(dataArray);

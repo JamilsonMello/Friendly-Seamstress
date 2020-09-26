@@ -72,10 +72,10 @@ const Details: React.FC<Props> = ({ route }) => {
 
   const [visible, setVisible] = useState<boolean>(false);
   const [title, setTitle] = useState('');
-  const [fieldSelected, setFieldSelected] = useState<number>(0);
-  const [quantity, setQuantity] = useState<number>(item.quantity);
-  const [value, setValue] = useState<number>(item.value);
+  const [fieldSelected, setFieldSelected] = useState<number | undefined>();
   const [text, setText] = useState('');
+  const [itemQuantity, setItemQuantity] = useState(item.quantity);
+  const [itemValue, setItemValue] = useState(item.value);
 
   const upKeyboard = useRef(new Animated.Value(0)).current;
 
@@ -83,14 +83,30 @@ const Details: React.FC<Props> = ({ route }) => {
     ? format(item.delivered, "dd'/'MM'/'yyyy")
     : 'Em produção';
 
-  const total = useMemo(() => numberFormat(quantity * value), [
-    value,
-    quantity,
+  // const values = useMemo((): any => {
+  //   const parsedText = replaceDot(text);
+
+  //   return {
+  //     quantity: fieldSelected === 0 ? Number(parsedText) : quantity,
+  //     value: fieldSelected === 1 ? Number(parsedText) : value,
+  //   };
+  // }, [fieldSelected, value, quantity, text]);
+
+  const total = useMemo(() => numberFormat(itemQuantity * itemValue), [
+    itemValue,
+    itemQuantity,
   ]);
 
   const handleSubmit = useCallback(async (): Promise<void> => {
     if (text.length < 1) return;
 
+    const parsedText = Number(replaceDot(text));
+
+    const quantity = fieldSelected === 0 ? parsedText : itemQuantity;
+    const value = fieldSelected === 1 ? parsedText : itemValue;
+
+    setItemQuantity(quantity);
+    setItemValue(value);
     setVisible(false);
 
     await firebase
@@ -98,14 +114,11 @@ const Details: React.FC<Props> = ({ route }) => {
       .collection(`${collection}`)
       .doc(`${item.id}`)
       .update({
-        quantity: fieldSelected === 0 ? Number(text) : item.quantity,
-        value: fieldSelected === 1 ? Number(text) : item.value,
+        quantity,
+        value,
       });
-
-    setQuantity((state) => (fieldSelected === 0 ? Number(text) : state));
-    setValue((state) => (fieldSelected === 1 ? Number(text) : state));
     setText('');
-  }, [item, collection, text, fieldSelected]);
+  }, [item, collection, fieldSelected, itemQuantity, itemValue, text]);
 
   const handleKeyboardDidShow = useCallback((): void => {
     Animated.timing(upKeyboard, {
@@ -172,7 +185,7 @@ const Details: React.FC<Props> = ({ route }) => {
           <QuantityView>
             <Icon name="pie-chart" size={60} color="#FF69B4" />
             <DescriptionTitle>Quantidade</DescriptionTitle>
-            <Quantity>{quantity}</Quantity>
+            <Quantity>{itemQuantity}</Quantity>
 
             <EditButton
               hitSlop={{ left: 10, right: 10, bottom: 10, top: 10 }}
@@ -200,7 +213,7 @@ const Details: React.FC<Props> = ({ route }) => {
           <ValueView>
             <Icon name="dollar-sign" size={60} color="#006400" />
             <DescriptionTitle>Valor</DescriptionTitle>
-            <Value>{numberFormat(Number(replaceDot(value.toString())))}</Value>
+            <Value>{numberFormat(itemValue)}</Value>
 
             <EditButton
               hitSlop={{ left: 10, right: 10, bottom: 10, top: 10 }}
