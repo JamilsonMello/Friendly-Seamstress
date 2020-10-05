@@ -64,3 +64,4 @@ buck-out/
 
 
 google-services.json
+android/gradle.properties

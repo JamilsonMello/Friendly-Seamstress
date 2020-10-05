@@ -87,7 +87,9 @@ const Deliveries: React.FC = () => {
   const [showTotal, setShowTotal] = useState<boolean>(false);
   const [field, setField] = useState<number>(0);
   const [openCalendar, setOpenCalendar] = useState(0);
-  const [getMonthToSearch, setGetMonthToSearch] = useState<number>();
+  const [getMonthToSearch, setGetMonthToSearch] = useState<number>(
+    new Date().getMonth() + 1,
+  );
   const [company, setCompany] = useState<string | undefined>('Todos');
   const [compareDate, setCompareDate] = useState<CompareDateProps>(
     {} as CompareDateProps,
@@ -296,6 +298,14 @@ const Deliveries: React.FC = () => {
     [getMonthToSearch],
   );
 
+  const getItemLayout = useCallback((data, index) => {
+    return {
+      length: 58,
+      offset: 58 * index,
+      index,
+    };
+  }, []);
+
   useEffect(() => {
     loadHistory(getMonthToSearch);
   }, [loadHistory, getMonthToSearch]);
@@ -367,7 +377,8 @@ const Deliveries: React.FC = () => {
         )}
         <MonthsView>
           <FlatList
-            initialScrollIndex={getMonthToSearch}
+            initialScrollIndex={getMonthToSearch - 1}
+            getItemLayout={getItemLayout}
             horizontal
             showsHorizontalScrollIndicator={false}
             data={months}
