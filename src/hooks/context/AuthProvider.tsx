@@ -30,6 +30,7 @@ const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
 
 const AuthProvider: React.FC = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(true);
+
   const [data, setData] = useState<DataProps>({} as DataProps);
 
   useEffect(() => {

@@ -248,6 +248,7 @@ const Profile: React.FC<Props> = ({ route }) => {
     setRefreshing(false);
   }, [loadHistory]);
 
+  console.log(history);
   return (
     <Container>
       <ModalFilter
