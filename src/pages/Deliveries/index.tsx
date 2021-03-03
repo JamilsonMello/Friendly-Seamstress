@@ -203,11 +203,20 @@ const Deliveries: React.FC = () => {
   const loadHistory = useCallback(
     async (month) => {
       setLoadingHistoryList(true);
+      setGetMonthToSearch(month || new Date().getMonth() + 1);
       const year = new Date().getFullYear();
       const currentMonth = new Date().getMonth();
 
-      const startDate = new Date(year, month - 1 || currentMonth, 1);
-      const endDate = new Date(year, month || currentMonth + 1, 0);
+      let startDate;
+      let endDate;
+
+      if (month) {
+        startDate = new Date(year, month - 1, 1)
+        endDate = new Date(year, month, 0);
+      } else {
+        startDate = new Date(year, currentMonth, 1)
+        endDate = new Date(year, currentMonth + 1, 0);
+      }
 
       const { docs } = await firebase
         .firestore()
@@ -226,7 +235,6 @@ const Deliveries: React.FC = () => {
       setHistory(dataOrders as HistoryProps[]);
       setLoading(false);
       setLoadingHistoryList(false);
-      setGetMonthToSearch(startDate.getMonth() + 1);
     },
     [provider.uid],
   );
